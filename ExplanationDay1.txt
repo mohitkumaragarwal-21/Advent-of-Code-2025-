@@ -49,6 +49,8 @@ DAY 1 — The Secret Entrance
   Counter increments conditionally
   Pure register-transfer logic
 
+  *ANS-> 1165
+
    #Part 2 
 
 
@@ -81,4 +83,7 @@ DAY 1 — The Secret Entrance
 
   Step counter
   FSM to control instruction vs step execution
+
   FSM + counters
+
+  *ANS -> 6496
