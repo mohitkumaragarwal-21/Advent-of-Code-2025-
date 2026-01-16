@@ -1,0 +1,63 @@
+DAY 2 — Gift Shop
+
+ #Problem Setup
+
+  Input is a list of numeric ranges
+  Example: 95-115
+  For every number in each range, check if it’s invalid
+  Add all invalid IDs
+
+  #Part 1
+
+  An ID is invalid if:
+  It consists of a digit sequence repeated exactly twice
+
+  Examples:
+
+  11 → 1 | 1
+  6464 → 64 | 64
+  123123 → 123 | 123
+
+  Step-by-step logic
+
+  For each range [low, high]:
+  For each number n in that range:
+  Count digits
+  Try splitting into two equal halves
+  If both halves are identical → invalid
+  Add all invalid IDs
+
+  #RTL Logic
+  Counters iterate ranges and numbers
+  Comparators + division by powers of 10
+  Accumulator for sum
+  
+  #Part 2
+
+
+  An ID is invalid if:
+  It consists of any digit sequence repeated ≥ 2 times
+ 
+  Examples:
+
+  1111111 → 1 × 7
+  121212 → 12 × 3
+  123123123 → 123 × 3
+
+  Step-by-step logic
+
+  For each number:
+  Try all possible base pattern lengths
+  Repeatedly check if the pattern matches the remaining digits
+
+  If:
+
+  Entire number is consumed
+  Repetition count ≥ 2
+→ invalid
+  Add to sum
+
+  #RTL Logic
+
+  FSM-based repeated comparison
+  

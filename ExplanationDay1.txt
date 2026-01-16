@@ -1,0 +1,84 @@
+DAY 1 — The Secret Entrance
+
+    #Part 1
+
+1.  Problem Setup
+
+ . Start at position 50
+ . Positions are on a circular track of size 100 → positions 0 to 99
+
+  Each instruction has:
+
+  Direction: L (left) or R (right)
+  Value: number of steps
+
+  Wrapping rules:
+
+  If position < 0 → wrap to 99
+  If position > 99 → wrap to 0
+ 
+  Every time you land on position 0, you count it
+
+
+  Each instruction moves you in a single jump:
+
+  L → pos = pos - value
+  R → pos = pos + value  
+  Then wrap to [0–99]
+  Count if final position is 0
+
+  # Step-by-step logic
+
+  Initialize:
+  pos = 50
+  count = 0
+
+  For each instruction:
+  Move left or right by value
+  Apply wraparound
+
+  If pos == 0, increment count
+
+  After all instructions:
+  Output count
+  
+  -> RTL Logic
+
+  One instruction = one clock cycle
+  Simple arithmetic + wrap logic
+  Counter increments conditionally
+  Pure register-transfer logic
+
+   #Part 2 
+
+
+  Instead of jumping:
+  Move one step at a time
+  Do this for value steps
+  Count every time position becomes 0 (including intermediate steps)
+
+ ->  Step-by-step logic
+
+  Initialize:
+  pos = 50
+  count = 0
+
+  For each instruction:
+  Set steps_remaining = value
+  While steps_remaining > 0:
+  Move one step (L or R)
+  Apply wraparound immediately
+  If pos == 0, increment count
+  Decrement steps_remaining
+  Continue until all instructions are processed
+
+ # RTL Logic
+
+  Inner loop = time
+  One movement per clock cycle
+
+  Requires:
+
+  Step counter
+  FSM to control instruction vs step execution
+  FSM + counters
