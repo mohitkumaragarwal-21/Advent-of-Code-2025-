@@ -1,0 +1,63 @@
+module day2_part2 #
+(
+    parameter R = 64
+)
+(
+    input  wire        clk,
+    input  wire        rst,
+    input  wire        start,
+    input  wire [63:0] lo [0:R-1],
+    input  wire [63:0] hi [0:R-1],
+    output reg  [63:0] answer,
+    output reg         done
+);
+
+    reg [6:0]  r;
+    reg [63:0] cur;
+
+    function automatic is_repeatN(input [63:0] n);
+        integer len, rep, i;
+        reg [63:0] base, tmp, pow10;
+        begin
+            is_repeatN = 0;
+            for (len = 1; len <= 9; len = len + 1) begin
+                pow10 = 1;
+                for (i = 0; i < len; i = i + 1)
+                    pow10 = pow10 * 10;
+
+                base = n / pow10;
+                tmp  = n;
+                rep  = 0;
+
+                while (tmp % pow10 == base) begin
+                    tmp = tmp / pow10;
+                    rep = rep + 1;
+                end
+
+                if (tmp == 0 && rep >= 2)
+                    is_repeatN = 1;
+            end
+        end
+    endfunction
+
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            r <= 0;
+            cur <= 0;
+            answer <= 0;
+            done <= 0;
+        end else if (start && !done) begin
+            if (cur == 0)
+                cur <= lo[r];
+            else if (cur <= hi[r]) begin
+                if (is_repeatN(cur))
+                    answer <= answer + cur;
+                cur <= cur + 1;
+            end else begin
+                cur <= 0;
+                r <= r + 1;
+                if (r == R-1) done <= 1;
+            end
+        end
+    end
+endmodule

@@ -1,0 +1,99 @@
+module day1_part2 #
+(
+    parameter N = 5000
+)
+(
+    input  wire         clk,
+    input  wire         rst,
+    input  wire         start,
+    input  wire [0:N-1] dir,          // 0 = L, 1 = R
+    input  wire [15:0]  val [0:N-1],
+    output reg  [31:0]  answer,
+    output reg          done
+);
+
+    // Instruction index
+    reg [12:0] instr_i;        // enough for N=5000
+
+    // Position 0–99
+    reg [6:0] pos;
+
+    // Step counter for current instruction
+    reg [15:0] step_cnt;
+
+    // FSM state
+    typedef enum logic [1:0] {
+        IDLE,
+        STEPPING,
+        NEXT,
+        FINISH
+    } state_t;
+
+    state_t state;
+
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            pos      <= 7'd50;
+            answer   <= 32'd0;
+            instr_i  <= 13'd0;
+            step_cnt <= 16'd0;
+            done     <= 1'b0;
+            state    <= IDLE;
+        end
+        else begin
+            case (state)
+
+                IDLE: begin
+                    if (start) begin
+                        state <= STEPPING;
+                        step_cnt <= val[instr_i];
+                    end
+                end
+
+                STEPPING: begin
+                    if (step_cnt != 0) begin
+                        // move one step
+                        if (dir[instr_i] == 1'b0) begin
+                            if (pos == 0)
+                                pos <= 7'd99;
+                            else
+                                pos <= pos - 1'b1;
+                        end
+                        else begin
+                            if (pos == 7'd99)
+                                pos <= 7'd0;
+                            else
+                                pos <= pos + 1'b1;
+                        end
+
+                        // count hits
+                        if (pos == 7'd0)
+                            answer <= answer + 1'b1;
+
+                        step_cnt <= step_cnt - 1'b1;
+                    end
+                    else begin
+                        state <= NEXT;
+                    end
+                end
+
+                NEXT: begin
+                    instr_i <= instr_i + 1'b1;
+                    if (instr_i + 1'b1 < N) begin
+                        step_cnt <= val[instr_i + 1'b1];
+                        state <= STEPPING;
+                    end
+                    else begin
+                        state <= FINISH;
+                    end
+                end
+
+                FINISH: begin
+                    done <= 1'b1;
+                end
+
+            endcase
+        end
+    end
+
+endmodule

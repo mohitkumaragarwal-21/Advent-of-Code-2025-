@@ -1,0 +1,56 @@
+`timescale 1ns/1ps
+
+module tb_day2;
+
+    parameter R = 64;
+
+    reg clk, rst, start;
+
+    reg [63:0] lo [0:R-1];
+    reg [63:0] hi [0:R-1];
+
+    wire [63:0] ans1, ans2;
+    wire done1, done2;
+
+    day2_part1 #(R) P1 (
+        .clk(clk), .rst(rst), .start(start),
+        .lo(lo), .hi(hi),
+        .answer(ans1), .done(done1)
+    );
+
+    day2_part2 #(R) P2 (
+        .clk(clk), .rst(rst), .start(start),
+        .lo(lo), .hi(hi),
+        .answer(ans2), .done(done2)
+    );
+
+    always #5 clk = ~clk;
+
+    integer i, fd;
+    initial begin
+        clk = 0;
+        rst = 1;
+        start = 0;
+
+        fd = $fopen("ranges.txt","r");
+        i = 0;
+        while (!$feof(fd)) begin
+            $fscanf(fd,"%d-%d\n",lo[i],hi[i]);
+            i = i + 1;
+        end
+        $fclose(fd);
+
+        #20 rst = 0;
+        #10 start = 1;
+        #10 start = 0;
+
+        wait(done1 && done2);
+
+        $display("==================================");
+        $display("PART 1 = %0d", ans1);
+        $display("PART 2 = %0d", ans2);
+        $display("==================================");
+
+        #20 $finish;
+    end
+endmodule

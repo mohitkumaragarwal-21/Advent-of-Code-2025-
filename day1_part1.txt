@@ -1,0 +1,55 @@
+module day1_part1 #
+(
+    parameter N = 5000
+)
+(
+    input  wire        clk,
+    input  wire        rst,
+    input  wire        start,
+    input  wire [0:N-1] dir,          // 0 = L, 1 = R
+    input  wire [15:0] val [0:N-1],
+    output reg  [31:0] answer,
+    output reg         done
+);
+
+    // Explicitly sized registers
+    reg [12:0] i;        // enough for N=5000
+    reg [6:0]  pos;      // 0–99 fits in 7 bits
+
+    reg [7:0] next_pos;  // temp wider for arithmetic
+
+    always @(posedge clk or posedge rst) begin
+        if (rst) begin
+            pos    <= 7'd50;
+            answer <= 32'd0;
+            done   <= 1'b0;
+            i      <= 13'd0;
+        end
+        else if (start && !done) begin
+            if (i < N) begin
+
+                // compute next position
+                if (dir[i] == 1'b0)
+                    next_pos = pos + 8'd100 - val[i][6:0];
+                else
+                    next_pos = pos + val[i][6:0];
+
+                // wrap around 0–99
+                if (next_pos >= 8'd100)
+                    pos <= next_pos - 8'd100;
+                else
+                    pos <= next_pos[6:0];
+
+                // count hits
+                if (pos == 7'd0)
+                    answer <= answer + 1'b1;
+
+                i <= i + 1'b1;
+            end
+            else begin
+                done <= 1'b1;
+            end
+        end
+    end
+
+endmodule
