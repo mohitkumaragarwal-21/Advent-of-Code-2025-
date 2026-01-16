@@ -31,6 +31,8 @@ DAY 2 — Gift Shop
   Counters iterate ranges and numbers
   Comparators + division by powers of 10
   Accumulator for sum
+
+  *ANS -> 34826702005
   
   #Part 2
 
@@ -60,4 +62,7 @@ DAY 2 — Gift Shop
   #RTL Logic
 
   FSM-based repeated comparison
+
+  *ANS -> 43287141963
+
   
